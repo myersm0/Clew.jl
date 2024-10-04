@@ -1,6 +1,6 @@
 
 # todo: allow passing in a vector of Content instead of many calls to this fn
-function upsert!(collection_name::String, c::Content; client::Py)
+function upsert!(c::Content, client::Py)
 	client.upsert(
 		collection_name = collection_name,
 		data = pylist(
@@ -19,26 +19,26 @@ function upsert!(collection_name::String, c::Content; client::Py)
 	)
 end
 
-function upsert!(collection_name::String, k::String; client::Py, base_dir::String)
+function upsert!(k::String, client::Py; base_dir::String = base_dir)
 	c = Content("$base_dir/$k/.clew"; model = model)
-	upsert!("clew", c; client = client)
+	upsert!(c, client = client)
 end
 
-function upsert!(collection_name::String, ks::Vector{String}; client::Py, base_dir::String)
+function upsert!(ks::Vector{String}, client::Py; base_dir::String = base_dir)
 	for k in ks
-		upsert!("clew", k; client = client, base_dir = base_dir)
+		upsert!(k, client; base_dir = base_dir)
 	end
 end
 
-function search(collection_name::String, query::String; client::Py, model::Py, limit::Int)
-	embedding = make_embedding("notes for system admin"; model = model)
+function search(query::String, client::Py; model::Py, limit::Int=5, filters::String="")
+	embedding = make_embedding(query; model = model)
 	ret = client.search(
-		collection_name = "clew", 
+		collection_name = collection_name,
 		data = pylist([pycollist(embedding)]), 
 		limit = limit,
 		output_fields = pylist(["key", "purpose"])
-	)[0]
-	return [pyconvert(Dict, x["entity"]) for x in ret]
+	)
+	return [pyconvert(Dict, x["entity"]) for x in ret[0]]
 end
 
 function randhex(n::Int = 6)
@@ -49,7 +49,7 @@ function randhex(n::Int = 6)
 	end
 end
 
-function create(; purpose::String, base_dir::String, date::Union{String, Nothing} = nothing)
+function create(; purpose::String, base_dir::String = base_dir, date::Union{String, Nothing} = nothing)
 	key = randhex(6)
 	dest = "$base_dir/$key/"
 	!isdir(dest) || error("Target directory $key already exists")
@@ -71,7 +71,7 @@ function create(; purpose::String, base_dir::String, date::Union{String, Nothing
 	return key
 end
 
-function get_keys(collection_name::String = "clew")
+function get_keys(client::Py, collection_name::String = collection_name)
 	ids = client.query(
 		collection_name = collection_name, filter = "key != ''", output_fields = pylist(["key"])
 	)
@@ -79,8 +79,8 @@ function get_keys(collection_name::String = "clew")
 	return [pyconvert(String, x["key"]) for x in ids]
 end
 
-function delete!(collection_name::String, ids::Vector{String})
-	client.delete(collection_name = "clew", filter = "key in $(ids)")
+function delete!(ids::Vector{String}, client::Py)
+	client.delete(collection_name = collection_name, filter = "key in $(ids)")
 end
 
 

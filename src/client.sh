@@ -31,8 +31,8 @@ insert() {
 }
 
 present_results() {
-	local keys=($(echo -e "$@" | cut -f2))  # Search result keys passed as arguments
-
+	# Search result keys passed as arguments
+	local keys=($(echo -e "$@" | sed -r 's/ . ([a-f0-9]{6})\b.*/\1/'))  
 	while true; do
 		read -p "Enter choice (number or partial key): " choice
 

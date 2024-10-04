@@ -1,33 +1,19 @@
 
 
-function search(client, data::String; model::Py, limit::Int=5, filters::String="")
-	println("The data is $data")
-	embedding = make_embedding(data; model = model)
-	search_vector = pylist([pycollist(embedding)])
-	ret = client.search(
-		collection_name="clew",
-		data=search_vector,
-		limit=limit,
-		output_fields=pylist(["key", "purpose"])
-	)
-	println("Got it")
-	return([pyconvert(Dict, x["entity"]) for x in ret[0]])
+function insert(purpose::String, client::Py)
+	k = create(; purpose=purpose, base_dir=base_dir)
+	upsert!(k, "clew"; client=client, base_dir=base_dir)
 end
 
-function insert(client, purpose::String)
-	k = create(; purpose = purpose, base_dir = base_dir)
-	upsert!("clew", k; client = client, base_dir = base_dir)
-end
-
-function parse_and_handle(sock::Sockets.TCPSocket, request::String, client)
+function parse_and_handle(request::String, client::Py, sock::Sockets.TCPSocket)
 	if startswith(request, "search")
 		matches = match(r"data=\"(.*?)\" limit=(\d*) filters=\"(.*?)\"", request)
 		data = string(matches.captures[1])
 		limit = parse(Int, matches.captures[2] != "" ? matches.captures[2] : "10")
 		filters = matches.captures[3]
-		ret = search(client, data; model = model, limit=limit)
+		ret = search(data, client; model=model, limit=limit)
 		for x in ret
-			write(sock, "▪\t$(x["key"])\t$(x["purpose"])\n")
+			write(sock, " ▪ $(x["key"])\t$(x["purpose"])\n")
 		end
 	elseif startswith(request, "insert")
 		matches = match(r"purpose=\"(.*?)\"", request)
@@ -46,8 +32,8 @@ function start_tcp_daemon(port::Int)
 		@async begin
 			try
 				request = readline(sock)
-				println("The request is $request")
-				parse_and_handle(sock, request, client)
+				println("Handing request $request")
+				parse_and_handle(request, client, sock)
 			catch e
 				println("Error handling client: $e")
 			finally

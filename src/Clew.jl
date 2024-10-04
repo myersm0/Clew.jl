@@ -10,9 +10,11 @@ using NamedArrays
 using Sockets
 using StatsBase: sample
 
-base_dir = "$(ENV["HOME"])/contents/"
-db_path = "$base_dir/2f5963/clew.db"
-pattern = r"^[0-9a-f]{6}$"
+const base_dir = "$(ENV["HOME"])/contents/"
+const db_path = "$base_dir/2f5963/clew.db"
+const pattern = r"^[0-9a-f]{6}$"
+const collection_name = "clew"
+
 ks = filter(x -> occursin(pattern, x), readdir(base_dir))
 
 include("types.jl")
