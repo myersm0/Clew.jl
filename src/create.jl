@@ -1,10 +1,4 @@
 
-db_path = "$(ENV["HOME"])/contents/2f5963/clew.db"
-
-pymilvus = pyimport("pymilvus")
-
-client = pymilvus.MilvusClient(db_path)
-
 schema = pymilvus.MilvusClient.create_schema(
 	auto_id = false, enable_dynamic_field = false
 )
