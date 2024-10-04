@@ -1,12 +1,9 @@
 module Clew
 
 using PythonCall
-using LinearAlgebra
 using Chain
-using ArgParse
 using JSON
 using Dates
-using NamedArrays
 using Sockets
 using StatsBase: sample
 
