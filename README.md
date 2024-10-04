@@ -7,7 +7,7 @@ The way it works is that I store all my directories (of notes, media, datasets, 
 
 It depends on two Python packages, the `pymilvus` ("Milvus Lite") vector database and `sentence-transformers` for a local SentenceBERT AI model. These things drive the semantic search and topic modeling capabilities.
 
-The name "clew" is derived from the Greek myth of the labyrinth, a reference to the thread that enabled the hero to retrace his steps and find the way. Also it's a short word with few sound-alikes in English, which is important for me as I control my computer primarily by voice (with [Talon]("https://talonvoice.com/")).
+The name "clew" is derived from the Greek myth of the labyrinth, a reference to the thread that enabled the hero to retrace his steps and find the way. Also it's a short word with few sound-alikes in English, which is important for me as I control my computer primarily by voice (with [Talon](https://talonvoice.com/)).
 
 This is a work in progress.
 
