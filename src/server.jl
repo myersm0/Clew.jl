@@ -27,7 +27,7 @@ function parse_and_handle(sock::Sockets.TCPSocket, request::String, client)
 		filters = matches.captures[3]
 		ret = search(client, data; model = model, limit=limit)
 		for x in ret
-			write(sock, "$(x["key"])\t$(x["purpose"])\n")
+			write(sock, "▪\t$(x["key"])\t$(x["purpose"])\n")
 		end
 	elseif startswith(request, "insert")
 		matches = match(r"purpose=\"(.*?)\"", request)
