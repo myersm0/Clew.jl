@@ -36,7 +36,8 @@ function search(query::String, client::Py; model::Py, limit::Int=5, filters::Str
 		collection_name = collection_name,
 		data = pylist([pycollist(embedding)]), 
 		limit = limit,
-		output_fields = pylist(["key", "purpose"])
+		output_fields = pylist(["key", "purpose"]),
+		filter = filters
 	)
 	return [pyconvert(Dict, x["entity"]) for x in ret[0]]
 end
