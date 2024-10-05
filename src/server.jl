@@ -14,8 +14,8 @@ function parse_and_handle(request::String, client::Py, sock::Sockets.TCPSocket)
 		limit = parse(Int, matches.captures[2] != "" ? matches.captures[2] : "10")
 		filters = matches.captures[3]
 		ret = search(data, client; model=model, limit=limit)
-		for x in ret.values
-			write(sock, " ▪ $(x["key"])\t$(x["purpose"])\n")
+		for (i, x) in Iterators.reverse(enumerate(ret.values))
+			write(sock, "[$i] $(x["key"]): $(x["purpose"])\n")
 		end
 	elseif startswith(request, "insert")
 		matches = match(r"purpose=\"(.*?)\"", request)
