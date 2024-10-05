@@ -20,8 +20,8 @@ function upsert!(c::Content, client::Py)
 end
 
 function upsert!(k::String, client::Py; base_dir::String = base_dir, model::Py)
-	c = Content("$base_dir/$k/.clew", client = client; model = model)
-	upsert!(c, client = client)
+	c = Content("$base_dir/$k/.clew"; model = model)
+	upsert!(c, client)
 end
 
 function upsert!(ks::Vector{String}, client::Py; base_dir::String = base_dir, model::Py)
