@@ -109,6 +109,15 @@ function find_elbow(distances::Vector{<:Number})
 	return elbow_index
 end
 
+function prune(results::NamedTuple)
+	elbow = find_elbow(results.distances)
+	elbow > 1 || error("Expected elbow to be at index >= 2")
+	return (
+		distances = results.distances[1:(elbow - 1)],
+		values = results.values[1:(elbow - 1)]
+	)
+end
+
 
 
 

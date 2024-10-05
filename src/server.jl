@@ -13,7 +13,7 @@ function parse_and_handle(request::String, client::Py, sock::Sockets.TCPSocket)
 		data = string(matches.captures[1])
 		limit = parse(Int, matches.captures[2] != "" ? matches.captures[2] : "10")
 		filters = matches.captures[3]
-		ret = search(data, client; model=model, limit=limit)
+		ret = search(data, client; model=model, limit=limit) |> prune
 		for (i, x) in Iterators.reverse(enumerate(ret.values))
 			write(sock, "[$i] $(x["key"]): $(x["purpose"])\n")
 		end
