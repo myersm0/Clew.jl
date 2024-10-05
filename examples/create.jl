@@ -41,9 +41,11 @@ index_params.add_index(
 
 client.create_index(collection_name = collection_name, index_params = index_params)
 
+pymilvus = pyimport("pymilvus")
+client = pymilvus.MilvusClient(args[:db_path])
 model = load_sbert()
 ks = filter(x -> occursin(pattern, x), readdir(base_dir))
-upsert!(ks, client; base_dir = base_dir)
+upsert!(ks, client; base_dir = base_dir, model = model)
 
 
 
