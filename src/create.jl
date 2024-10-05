@@ -41,5 +41,12 @@ index_params.add_index(
 
 client.create_index(collection_name = collection_name, index_params = index_params)
 
+model = load_sbert()
+ks = filter(x -> occursin(pattern, x), readdir(base_dir))
+upsert!(ks, client; base_dir = base_dir)
+
+
+
+
 
 
