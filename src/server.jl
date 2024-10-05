@@ -1,13 +1,12 @@
 
 pymilvus = pyimport("pymilvus")
-client = pymilvus.MilvusClient(db_path)
 
 function insert(purpose::String, client::Py)
 	k = create(; purpose=purpose, base_dir=base_dir)
 	upsert!(k, "clew"; client=client, base_dir=base_dir)
 end
 
-function parse_and_handle(request::String, client::Py, sock::Sockets.TCPSocket)
+function parse_and_handle(sock::Sockets.TCPSocket, request::String, client::Py, model::Py)
 	if startswith(request, "search")
 		matches = match(r"data=\"(.*?)\" limit=(\d*) filters=\"(.*?)\"", request)
 		data = string(matches.captures[1])
@@ -26,7 +25,7 @@ function parse_and_handle(request::String, client::Py, sock::Sockets.TCPSocket)
 	end
 end
 
-function start_tcp_daemon(port::Int)
+function start_tcp_daemon(port::Int, client::Py, model::Py)
 	server = listen(port)
 	println("Daemon started, listening on port $port")
 	while true
@@ -35,7 +34,7 @@ function start_tcp_daemon(port::Int)
 			try
 				request = readline(sock)
 				println("Handing request $request")
-				parse_and_handle(request, client, sock)
+				parse_and_handle(sock, request, client, model)
 			catch e
 				println("Error handling client: $e")
 			finally
