@@ -13,8 +13,21 @@ function parse_and_handle(sock::Sockets.TCPSocket, request::String, client::Py, 
 		limit = parse(Int, matches.captures[2] != "" ? matches.captures[2] : "10")
 		filters = matches.captures[3]
 		ret = search(data, client; model=model, limit=limit) |> prune
+		second_elbow = find_elbow(ret.distances)
 		for (i, x) in Iterators.reverse(enumerate(ret.values))
-			write(sock, "[$i] $(x["key"]): $(x["purpose"])\n")
+			option_format = "\033[4m" # underline
+			key_format = "\033[38;5;245m" # medium gray
+			purpose_format = ""
+			format_reset = "\033[0m"
+			if i < second_elbow
+				# add bold formatting if result is particularly strong
+				option_format = "$option_format\033[1m"
+				key_format = "$key_format\033[1m"
+				purpose_format = "$purpose_format\033[1m"
+			end
+			write(sock, " [$option_format$i$format_reset] ")
+			write(sock, "$key_format$(x["key"])$format_reset: ")
+			write(sock, "$purpose_format$(x["purpose"])$format_reset\n")
 		end
 	elseif startswith(request, "insert")
 		matches = match(r"purpose=\"(.*?)\"", request)
