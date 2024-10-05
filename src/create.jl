@@ -28,7 +28,7 @@ schema.add_field(
 	datatype = pymilvus.DataType.INT64
 )
 
-client.create_collection(collection_name = "clew", schema = schema)
+client.create_collection(collection_name = collection_name, schema = schema)
 
 index_params = pymilvus.MilvusClient.prepare_index_params()
 index_params.add_index(
@@ -39,7 +39,7 @@ index_params.add_index(
 	params = pydict()
 )
 
-client.create_index(collection_name = "clew", index_params = index_params)
+client.create_index(collection_name = collection_name, index_params = index_params)
 
 
 

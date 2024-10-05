@@ -1,4 +1,6 @@
 
+pymilvus = pyimport("pymilvus")
+client = pymilvus.MilvusClient(db_path)
 
 function insert(purpose::String, client::Py)
 	k = create(; purpose=purpose, base_dir=base_dir)
