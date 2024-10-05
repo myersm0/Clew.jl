@@ -40,7 +40,7 @@ function search(query::String, client::Py; model::Py, limit::Int=5, filters::Str
 		filter = filters
 	)
 	return (
-		distances = [pyconvert(Float64, x["distances"]) for x in ret[0]],
+		distances = [pyconvert(Float64, x["distance"]) for x in ret[0]],
 		values = [pyconvert(Dict, x["entity"]) for x in ret[0]]
 	)
 end
@@ -87,9 +87,27 @@ function delete!(ids::Vector{String}, client::Py)
 	client.delete(collection_name = collection_name, filter = "key in $(ids)")
 end
 
+function perpendicular_distance(
+		point::Vector{<:Number}, line_start::Vector{<:Number}, line_end::Vector{<:Number}
+	)
+	x1, y1 = line_start
+	x2, y2 = line_end
+	x0, y0 = point
+	numerator = abs((y2 - y1)*x0 - (x2 - x1)*y0 + x2*y1 - y2*x1)
+	denominator = sqrt((y2 - y1)^2 + (x2 - x1)^2)
+	return numerator / denominator
+end
 
-
-
+function find_elbow(distances::Vector{<:Number})
+	first_point = [1.0, distances[1]]
+	last_point = [length(distances), distances[end]]
+	distances = [
+		perpendicular_distance([i, distances[i]], first_point, last_point) 
+		for i in eachindex(distances)
+	]
+	elbow_index = argmax(distances)
+	return elbow_index
+end
 
 
 
