@@ -32,7 +32,7 @@ insert() {
 
 present_results() {
 	# Search result keys passed as arguments
-	local keys=($(echo -e "$@" | sed -r 's/ . ([a-f0-9]{6})\b.*/\1/'))  
+	local keys=($(echo -e "$@" | sed -r 's/... ([a-f0-9]{6}):.*/\1/'))  
 	while true; do
 		read -p "Enter choice (number or partial key): " choice
 
@@ -43,7 +43,8 @@ present_results() {
 
 		if [[ "$choice" =~ ^[0-9]+$ ]]; then
 			if (( choice > 0 && choice <= ${#keys[@]} )); then
-				key="${keys[$((choice - 1))]}"
+				reverse_index=$(( ${#keys[@]} - choice ))  # Reverse choice to map to the correct index
+				key="${keys[$reverse_index]}"
 				cd "$base_dir/$key" || echo "Error: Directory $base_dir/$key does not exist."
 				break
 			else
