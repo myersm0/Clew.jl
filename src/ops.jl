@@ -30,7 +30,7 @@ function upsert!(ks::Vector{String}, client::Py; base_dir::String = base_dir)
 	end
 end
 
-function search(query::String, client::Py; model::Py, limit::Int=5, filters::String="")
+function search(query::String, client::Py; model::Py, limit::Int=20, filters::String="")
 	embedding = make_embedding(query; model = model)
 	ret = client.search(
 		collection_name = collection_name,
