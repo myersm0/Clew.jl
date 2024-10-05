@@ -6,6 +6,7 @@ using JSON
 using Dates
 using Sockets
 using StatsBase: sample
+using LinearAlgebra
 
 const base_dir = "$(ENV["HOME"])/contents/"
 const db_path = "$base_dir/2f5963/clew.db"
