@@ -39,7 +39,10 @@ function search(query::String, client::Py; model::Py, limit::Int=5, filters::Str
 		output_fields = pylist(["key", "purpose"]),
 		filter = filters
 	)
-	return [pyconvert(Dict, x["entity"]) for x in ret[0]]
+	return (
+		distances = [pyconvert(Float64, x["distances"]) for x in ret[0]],
+		values = [pyconvert(Dict, x["entity"]) for x in ret[0]]
+	)
 end
 
 function randhex(n::Int = 6)
