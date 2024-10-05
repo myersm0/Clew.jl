@@ -7,8 +7,8 @@ using Dates
 using Sockets
 using StatsBase: sample
 using LinearAlgebra
+using ArgParse
 
-const base_dir = "$(ENV["HOME"])/contents/"
 const pattern = r"^[0-9a-f]{6}$"
 const collection_name = "clew"
 

@@ -1,7 +1,7 @@
 
 pymilvus = pyimport("pymilvus")
 
-function insert(purpose::String, client::Py)
+function insert(purpose::String, client::Py, base_dir::String)
 	k = create(; purpose=purpose, base_dir=base_dir)
 	upsert!(k, "clew"; client=client, base_dir=base_dir)
 end
@@ -18,8 +18,9 @@ function parse_and_handle(sock::Sockets.TCPSocket, request::String, client::Py, 
 		end
 	elseif startswith(request, "insert")
 		matches = match(r"purpose=\"(.*?)\"", request)
+		base_dir = match(r"base_dir=\"(.*?)\"", request)
 		purpose = matches.captures[1]
-		insert(client, purpose)
+		insert(client, purpose, base_dir)
 	else
 		write(sock, "Invalid command\n")
 	end

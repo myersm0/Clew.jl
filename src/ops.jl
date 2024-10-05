@@ -53,7 +53,7 @@ function randhex(n::Int = 6)
 	end
 end
 
-function create(; purpose::String, base_dir::String = base_dir, date::Union{String, Nothing} = nothing)
+function create(; purpose::String, base_dir::String, date::Union{String, Nothing} = nothing)
 	key = randhex(6)
 	dest = "$base_dir/$key/"
 	!isdir(dest) || error("Target directory $key already exists")
