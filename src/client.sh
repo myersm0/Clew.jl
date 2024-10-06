@@ -4,23 +4,53 @@ HOST="localhost"
 PORT=2000
 base_dir="$HOME/contents"
 
-# Function to send a search request
 search() {
-	local data="$1"  # required
-	local limit="$2"  # optional
-	local metadata="$3"  # optional
-	
-	# Construct the search command to send to the server
-	request="search data=\"$data\""
-	
+	local data=""
+	local limit=""
+	local filter=""
+	local sort_by_date=false  # Default sorting is by similarity
+
+	while [[ "$#" -gt 0 ]]; do
+		case "$1" in
+			--data=*)
+				data="${1#*=}"
+				;;
+			--limit=*)
+				limit="${1#*=}"
+				;;
+			--filter=*)
+				filter="${1#*=}"
+				;;
+			--sort-by-date)
+				sort_by_date=true
+				;;
+			*)
+				echo "Unknown option: $1"
+				return 1
+				;;
+		esac
+		shift
+	done
+
+	request="search"
+
+	if [[ -n "$data" ]]; then
+		request="$request data=\"$data\""
+	fi
+
 	if [[ -n "$limit" ]]; then
 		request="$request limit=$limit"
 	fi
 
-	if [[ -n "$metadata" ]]; then
-		request="$request filters=\"$metadata\""
+	if [[ -n "$filter" ]]; then
+		request="$request filters=\"$filter\""
 	fi
-	
+
+	if [[ "$sort_by_date" == true ]]; then
+		request="$request sort=by_date"
+	fi
+
+	echo "$request"
 	echo "$request" | nc $HOST $PORT
 }
 
@@ -78,19 +108,19 @@ present_results() {
 
 # Main script logic to decide which command to run
 if [[ "$1" == "search" ]]; then
-	# Run the search function
-	results=$(search "$2" "$3" "$4")
+	# Shift past the "search" argument and pass the remaining ones to the search function
+	shift
+	results=$(search "$@")
 	echo "$results"
 	present_results "$results"
+
 elif [[ "$1" == "insert" ]]; then
 	# Run the insert function
 	insert "$2"
+
 else
 	echo "Usage: $0 {search|insert} [arguments]"
-	echo "Example: $0 search \"some query\" 5 \"metadata_filter\""
+	echo "Example: $0 search --data=\"some query\" --limit=5 --filter=\"metadata_filter\" --sort-by-date"
 	echo "	$0 insert \"project purpose\""
 fi
-
-
-
 
