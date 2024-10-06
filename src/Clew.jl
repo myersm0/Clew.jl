@@ -14,6 +14,7 @@ const collection_name = "clew"
 
 include("types.jl")
 include("sbert.jl")
+include("utility.jl")
 include("ops.jl")
 include("server.jl")
 include("main.jl")
