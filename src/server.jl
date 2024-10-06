@@ -7,7 +7,7 @@ function insert(purpose::String, client::Py, base_dir::String)
 end
 
 function start_tcp_daemon(port::Int, client::Py, model::Py)
-	server = listen(port)
+	server = listen(ip"127.0.0.1", port)
 	println("Daemon started, listening on port $port")
 	while true
 		sock = accept(server)
@@ -54,9 +54,6 @@ function handle_search(sock::Sockets.TCPSocket, client::Py, model::Py; kwargs...
 	data = get(kwargs, :data, "")
 	limit = parse(Int, get(kwargs, :limit, "10"))
 	filter = get(kwargs, :filter, "")
-	println("data is $data")
-	println("limit is $limit")
-	println("filter is $filter")
 
 	ret = search(
 		data, client; model=model, limit=limit, filter=filter
