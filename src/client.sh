@@ -35,6 +35,12 @@ search() {
 	request="search"
 
 	if [[ -n "$data" ]]; then
+		# if arg `data` is `.` or `./`, use the cwd's metadata as the search query
+		if [[ "$data" =~ ^\.\/?$ ]] && [[ "$(pwd)" =~ .*\/[0-9a-f]{6}$ ]]; then
+			data=$(jq -r '.purpose' ./.clew)
+			key=$(jq -r '.key' ./.clew)
+			filter="key != '$key'" # todo: ensure a different filter is not already provided
+		fi
 		request="$request --data=\"$data\""
 	fi
 
@@ -43,7 +49,7 @@ search() {
 	fi
 
 	if [[ -n "$filter" ]]; then
-		request="$request --filters=\"$filter\""
+		request="$request --filter=\"$filter\""
 	fi
 
 	if [[ "$sort_by_date" == true ]]; then
