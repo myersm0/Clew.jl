@@ -62,15 +62,14 @@ function handle_search(sock::Sockets.TCPSocket, client::Py, model::Py; kwargs...
 
 	for (i, x) in Iterators.reverse(enumerate(ret.values))
 		option_format = "\033[4m"  # underline
-		key_format = "\033[38;5;245m"  # medium gray
+		key_format = ""
 		purpose_format = ""
 		format_reset = "\033[0m"
 		if i < second_elbow
 			option_format = "$option_format\033[1m"  # bold if particularly strong result
-			key_format = "$key_format\033[1m"
 			purpose_format = "$purpose_format\033[1m"
 		end
-		write(sock, " [$option_format$i$format_reset] ")
+		write(sock, "[$option_format$i$format_reset] ")
 		write(sock, "$key_format$(x["key"])$format_reset: ")
 		write(sock, "$purpose_format$(x["purpose"])$format_reset\n")
 	end
