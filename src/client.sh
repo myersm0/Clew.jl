@@ -35,22 +35,21 @@ search() {
 	request="search"
 
 	if [[ -n "$data" ]]; then
-		request="$request data=\"$data\""
+		request="$request --data=\"$data\""
 	fi
 
 	if [[ -n "$limit" ]]; then
-		request="$request limit=$limit"
+		request="$request --limit=\"$limit\""
 	fi
 
 	if [[ -n "$filter" ]]; then
-		request="$request filters=\"$filter\""
+		request="$request --filters=\"$filter\""
 	fi
 
 	if [[ "$sort_by_date" == true ]]; then
-		request="$request sort=by_date"
+		request="$request --sort=by_date"
 	fi
 
-	echo "$request"
 	echo "$request" | nc $HOST $PORT
 }
 

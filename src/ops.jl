@@ -30,14 +30,14 @@ function upsert!(ks::Vector{String}, client::Py; base_dir::String = base_dir, mo
 	end
 end
 
-function search(query::String, client::Py; model::Py, limit::Int=20, filters::String="")
-	embedding = make_embedding(query; model = model)
+function search(data::String, client::Py; model::Py, limit::Int=20, filter::String="")
+	embedding = make_embedding(data; model = model)
 	ret = client.search(
 		collection_name = collection_name,
 		data = pylist([pycollist(embedding)]), 
 		limit = limit,
 		output_fields = pylist(["key", "purpose"]),
-		filter = filters
+		filter = filter
 	)
 	return (
 		distances = [pyconvert(Float64, x["distance"]) for x in ret[0]],

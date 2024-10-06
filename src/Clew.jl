@@ -8,6 +8,7 @@ using Sockets
 using StatsBase: sample
 using LinearAlgebra
 using ArgParse
+using Match
 
 const pattern = r"^[0-9a-f]{6}$"
 const collection_name = "clew"
