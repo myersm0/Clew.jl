@@ -55,7 +55,7 @@ search() {
 
 insert() {
 	local purpose="$1"
-	request="insert purpose=\"$purpose\""
+	request="insert --base_dir=\"$base_dir\" --purpose=\"$purpose\""
 	echo "$request" | nc $HOST $PORT
 }
 

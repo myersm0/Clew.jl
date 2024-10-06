@@ -14,7 +14,7 @@ function start_tcp_daemon(port::Int, client::Py, model::Py)
 		@async begin
 			try
 				request = readline(sock)
-				println("Handing request $request")
+				println("Handling request $request")
 				parse_and_handle(sock, request, client, model)
 			catch e
 				println("Error handling client: $e")
@@ -79,10 +79,9 @@ function handle_search(sock::Sockets.TCPSocket, client::Py, model::Py; kwargs...
 	end
 end
 
-function handle_insert(sock::Sockets.TCPSocket; kwargs...)
-	purpose = kwargs[:purpose]
-	base_dir = kwargs[:base_dir]
-	insert(client, purpose, base_dir)
+function handle_insert(sock::Sockets.TCPSocket, client::Py, model::Py; kwargs...)
+	k = create(; kwargs...)
+	upsert!(k, client; base_dir=kwargs[:base_dir], model = model)
 end
 
 
