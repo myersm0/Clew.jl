@@ -19,7 +19,7 @@ conda activate my_env
 conda install pip
 pip install -U pymilvus sentence-transformers
 export JULIA_CONDAPKG_BACKEND="System"
-export JULIA_PYTHONCALL_EXE="/path/to/my/miniconda/env/"
+export JULIA_PYTHONCALL_EXE="/path/to/miniconda/envs/my_env/bin/python"
 ```
 
 Those latter two lines seem to be necessary to get `PythonCall` to recognize packages from your currently active conda environment. Then, cd into this repo, start Julia with `julia --project` and:
