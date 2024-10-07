@@ -78,6 +78,7 @@ end
 function handle_insert(sock::Sockets.TCPSocket, client::Py, model::Py; kwargs...)
 	k = create(; kwargs...)
 	upsert!(k, client; base_dir=kwargs[:base_dir], model = model)
+	write(sock, "$k\n")
 end
 
 
