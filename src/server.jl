@@ -58,7 +58,7 @@ function handle_search(sock::Sockets.TCPSocket, client::Py, model::Py; kwargs...
 	ret = search(
 		data, client; model=model, limit=limit, filter=filter
 	) |> prune
-	second_elbow = find_elbow(ret.distances)
+	second_elbow = find_elbow(ret.similarities)
 
 	for (i, x) in Iterators.reverse(enumerate(ret.values))
 		option_format = "\033[4m"  # underline

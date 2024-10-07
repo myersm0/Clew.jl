@@ -40,7 +40,7 @@ function search(data::String, client::Py; model::Py, limit::Int=20, filter::Stri
 		filter = filter
 	)
 	return (
-		distances = [pyconvert(Float64, x["distance"]) for x in ret[0]],
+		similarities = [pyconvert(Float64, x["distance"]) for x in ret[0]],
 		values = [pyconvert(Dict, x["entity"]) for x in ret[0]]
 	)
 end

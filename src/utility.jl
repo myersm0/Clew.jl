@@ -18,22 +18,22 @@ function perpendicular_distance(
 	return numerator / denominator
 end
 
-function find_elbow(distances::Vector{<:Number})
-	first_point = [1.0, distances[1]]
-	last_point = [length(distances), distances[end]]
-	distances = [
-		perpendicular_distance([i, distances[i]], first_point, last_point) 
-		for i in eachindex(distances)
+function find_elbow(similarities::Vector{<:Number})
+	first_point = [1.0, similarities[1]]
+	last_point = [length(similarities), similarities[end]]
+	similarities = [
+		perpendicular_distance([i, similarities[i]], first_point, last_point) 
+		for i in eachindex(similarities)
 	]
-	elbow_index = argmax(distances)
+	elbow_index = argmax(similarities)
 	return elbow_index
 end
 
 function prune(results::NamedTuple)
-	elbow = find_elbow(results.distances)
+	elbow = find_elbow(results.similarities)
 	elbow > 1 || error("Expected elbow to be at index >= 2")
 	return (
-		distances = results.distances[1:(elbow - 1)],
+		similarities = results.similarities[1:(elbow - 1)],
 		values = results.values[1:(elbow - 1)]
 	)
 end
