@@ -32,4 +32,41 @@ That should create an executable binary in the repo at `app/bin/Clew`, which you
 
 It will need to have an already-existing Milvus database file, however, that has a collection called "clew" with a certain schema which is outlined in `examples/create.jl`. I'll eventually add that as functionality in this package, but for now you could set it up yourself by example.
 
+## Usage
+Assuming you already have a Milvus database following the specified schema (see the last line in the section above) with some entries that have been inserted, you can search those entries from bash, over the Julia server that this package provides, in a way that's intentionally very similar to doing so within Milvus itself (see, for example, [this](https://milvus.io/api-reference/pymilvus/v2.3.x/MilvusClient/Vector/search.md)). 
+
+First you may want to define an alias like this:
+```bash
+alias clew="source /path/to/my/client.sh"
+```
+
+Then you can do this:
+```bash
+$ clew search --data="linear algebra"
+```
+
+`data` is your search query. For me, this returns the following results:
+```bash
+[3] 2234f5: MIT opencourseware 217 (graph theory) course materials
+[2] 55b3e2: MIT linear algebra lecture notes and julia code from different semesters
+[1] 334334: code to accompany Vectors, Matrices, and Least Squares book
+Go to:  
+```
+
+This output is two things in one:
+- a list of matching directories (for each, a 6-digit hex ID and a statement describing the contents) in ascending order by relevance to the query
+- a menu from which you can select one of these directories and `cd` into it by typing the associated ranking number (1, 2, or 3 in this case), or type `q` to quit.
+
+To select the list of relevant results from the total set of directories available, a cosine similarity search is done and from those similarity scores an elbow method is used to truncate the list to a manageable number of results. 
+
+You can also add filters to limit results based on metadata fields:
+```bash
+$ clew search --data="linear algebra" --filter="author == '$whoami' and created >= '2024-01-01'"
+```
+
+You could omit the semantic search query and just use filters like this, in which case results will be sorted by creation date:
+```bash
+$ clew search --filter="author == '$whoami' and created >= '2024-01-01'"
+```
+
 [![Build Status](https://github.com/myersm0/Clew.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/myersm0/Clew.jl/actions/workflows/CI.yml?query=branch%3Amain)
