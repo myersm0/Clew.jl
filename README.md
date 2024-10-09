@@ -7,28 +7,28 @@ The way it works is that I store all my directories (of notes, media, datasets, 
 
 It depends on two Python packages, the `pymilvus` ("Milvus Lite") vector database and `sentence-transformers` for a local SentenceBERT AI model. These things drive the semantic search and topic modeling capabilities.
 
-The name "clew" is derived from the Greek myth of the labyrinth, a reference to the thread that enabled the hero to retrace his steps and find the way. Also it's a short word with few sound-alikes in English, which is important for me as I control my computer primarily by voice (with [Talon](https://talonvoice.com/)).
-
 This is a work in progress.
 
 ## Installation
-Installing the Python dependencies and having them work with Julia's `PythonCall` can be tricky. Here's how I do it. First install Miniconda, then:
-```
+Installing the Python dependencies and having them work with Julia's `PythonCall` can be tricky. Here's how I do it. First install Miniconda, then in bash:
+```bash
 conda create --name my_env
 conda activate my_env
 conda install pip
 pip install -U pymilvus sentence-transformers
+git clone https://github.com/myersm0/Clew.jl
+cd Clew.jl
 export JULIA_CONDAPKG_BACKEND="System"
 export JULIA_PYTHONCALL_EXE="/path/to/miniconda/envs/my_env/bin/python"
 ```
 
-Those latter two lines seem to be necessary to get `PythonCall` to recognize packages from your currently active conda environment. Then, cd into this repo, start Julia with `julia --project` and:
-```
+Those latter two lines seem to be necessary to get `PythonCall` to recognize packages from your currently active conda environment. Then start Julia with `julia --project` and:
+```julia
 using PackageCompiler
 create_app(".", "app")
 ```
 
-That should create an executable binary in the repo at `app/bin/Clew`, which you can run with `app/bin/Clew --db_path="/path/to/my/milvus.db" --port=2000`. You'll probably want to have it running in the background. Leave that running as a server (listening for requests on `localhost:2000`), and you can then interact with it from other terminals via the provided `client.sh` script. You may want to edit `client.sh` for your own use cases and move it to somewhere in your `$PATH`, add some aliases, etc.
+That should create an executable binary in the repo at `app/bin/Clew`, which you can run from the terminal with `app/bin/Clew --db_path="/path/to/my/milvus.db" --port=2000`. Leave that running in the background as a server (it will be listening for requests on `localhost:2000` by default), and you can then interact with it from other terminals via the provided `client.sh` script. You may want to edit `client.sh` for your own use cases and move it to somewhere in your `$PATH`, add some aliases, etc.
 
 It will need to have an already-existing Milvus database file, however, that has a collection called "clew" with a certain schema which is outlined in `examples/create.jl`. I'll eventually add that as functionality in this package, but for now you could set it up yourself by example.
 
